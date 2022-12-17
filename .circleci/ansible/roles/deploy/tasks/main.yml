@@ -13,8 +13,8 @@
 #     src: "tmp/artifact.tar.gz"
 #     dest: "~/app"
 
-- name: Stop the app
-  command: "pm2 stop default"
+# - name: Stop the app
+#   command: "pm2 stop default"
 
 - name: Start the app
   command: "pm2 start ~/app/npm -- start"
