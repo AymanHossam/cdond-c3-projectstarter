@@ -8,10 +8,14 @@
     src: "artifact.tar.gz"
     dest: "~/app/artifact.tar.gz"
 
-# - name: Extract the zipped artifact
-#   unarchive:
-#     src: "tmp/artifact.tar.gz"
-#     dest: "~/app"
+- name: Log the contents of the folder
+  debug:
+    msg: "{{ lookup('command', 'ls ~/app/') }}"
+
+- name: Extract the zipped artifact
+  unarchive:
+    src: "~/app/artifact.tar.gz"
+    dest: "~/app"
 
 # - name: Stop the app
 #   command: "pm2 stop default"
