@@ -14,8 +14,24 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
-            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name udapeople-backend-d8b7341
+            aws cloudformation delete-stack --stack-name udapeople-frontend-d8b7341
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+            SUCCESS = $(curl https://kvdb.io/4qsF4PyMZPvtrX8Uzdi18e/migrations/d8b7341 -k)
+            if(( $SUCCESS==1 )); 
+            then
+             cd ~/project/backend
+             npm install
+             npm run migrations:revert
+            fi
+
 jobs:
   notify-success:
     docker:
@@ -144,21 +160,21 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --tags project=udapeople \
-              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+              --stack-name "udapeople-backend-d8b7341" \
+              --parameter-overrides ID="d8b7341"
       - run:
           name: Ensure front-end infrastructure exist
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
               --tags project=udapeople \
-              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+              --stack-name "udapeople-frontend-d8b7341" \
+              --parameter-overrides ID="d8b7341"
       - run:
           name: Add back-end ip to ansible inventory
           command: |
             aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --filters "Name=tag:Name,Values=backend-d8b7341" \
               --query "Reservations[*].Instances[*].PublicIpAddress" \
               --output text >> .circleci/ansible/inventory.txt
       - persist_to_workspace:
@@ -204,7 +220,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-                curl https://kvdb.io/4qsF4PyMZPvtrX8Uzdi18e/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+                curl https://kvdb.io/4qsF4PyMZPvtrX8Uzdi18e/migration_d8b7341 -d -k '1'
             fi
       # Here's where you will add some code to rollback on failure
 
@@ -223,7 +239,7 @@ jobs:
           name: Get backend url
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --filters "Name=tag:Name,Values=backend-d8b7341" \
               --query "Reservations[*].Instances[*].PublicIpAddress" \
               --output text)
             export API_URL="http://${BACKEND_IP}:3030"
@@ -236,17 +252,18 @@ jobs:
             cd frontend
             npm install
             npm run build
-            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            tar -czvf artifact-"d8b7341".tar.gz dist
+            aws s3 cp dist s3://udapeople-d8b7341 --recursive
       - destroy-environment
+      - revert-migrations
 
 workflows:
   default:
     jobs:
-      - build-frontend:
-          context: "My Slack Context"
-      - build-backend:
-          context: "My Slack Context"
+      # - build-frontend:
+      #     context: "My Slack Context"
+      # - build-backend:
+      #     context: "My Slack Context"
       # - test-frontend:
       #     requires:
       #       - build-frontend
@@ -263,18 +280,18 @@ workflows:
       #     requires:
       #       - build-backend
       #     context: "My Slack Context"
-      - deploy-infrastructure:
-          context: "My Slack Context"
-          requires:
-            - build-frontend
-            - build-backend
-      - configure-infrastructure:
-          requires:
-            - deploy-infrastructure
-          context: "My Slack Context"
+      # - deploy-infrastructure:
+      #     context: "My Slack Context"
+      #     requires:
+      #       - build-frontend
+      #       - build-backend
+      # - configure-infrastructure:
+      #     requires:
+      #       - deploy-infrastructure
+      #     context: "My Slack Context"
       - run-migrations:
-          requires:
-            - configure-infrastructure
+          # requires:
+          #   - configure-infrastructure
           context: "My Slack Context"
       - deploy-frontend:
           requires:
