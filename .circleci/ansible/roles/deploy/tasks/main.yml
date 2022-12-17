@@ -1,7 +1,17 @@
+- name: "create tmp directory"
+  file:
+    path: tmp
+    state: directory
+
 - name: Copy artifact to server
   copy:
     src: "artifact.tar.gz"
     dest: "tmp/artifact.tar.gz"
+
+- name: "create app directory"
+  file:
+    path: ~/app
+    state: directory
 
 - name: Extract the zipped artifact
   unarchive:
