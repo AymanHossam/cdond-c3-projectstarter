@@ -13,7 +13,7 @@ commands:
 jobs:
   build-frontend:
     docker:
-      - image: cimg/node:13.8.0
+      - image: circleci/node:16.13.0
     steps:
       - checkout
       - run:
@@ -28,7 +28,7 @@ jobs:
 
   build-backend:
     docker:
-      - image: cimg/node:13.8.0
+      - image: circleci/node:16.13.0
     steps:
       - checkout
       - run:
@@ -43,7 +43,7 @@ jobs:
 
   test-frontend:
     docker:
-      - image: cimg/node:13.8.0
+      - image: circleci/node:16.13.0
     steps:
       - checkout
       - run:
@@ -55,7 +55,7 @@ jobs:
 
   test-backend:
     docker:
-      - image: cimg/node:13.8.0
+      - image: circleci/node:16.13.0
     steps:
       - checkout
       - run:
@@ -67,7 +67,7 @@ jobs:
 
   scan-frontend:
     docker:
-      - image: cimg/node:13.8.0
+      - image: circleci/node:16.13.0
     steps:
       - checkout
       - run:
@@ -79,7 +79,7 @@ jobs:
 
   scan-backend:
     docker:
-      - image: cimg/node:13.8.0
+      - image: circleci/node:16.13.0
     steps:
       - checkout
       - run:
@@ -142,7 +142,7 @@ jobs:
       - run:
           name: Configure server
           command: |
-            cd .cimg/ansible
+            cd .circleci/ansible
             ansible-playbook -vvvv -i inventory.txt configure-server.yml
 
 workflows:
