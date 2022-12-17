@@ -6,7 +6,11 @@ orbs:
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    context: "My Slack Context"
     steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
       - run:
           name: Destroy environments
           when: on_fail
@@ -186,9 +190,9 @@ workflows:
       - scan-backend:
           requires:
             - build-backend
-      - notify-failure:
-          context: "My Slack Context"
-          when: on_fail
+      # - notify-failure:
+      #     context: "My Slack Context"
+      #     when: on_fail
 
       # - deploy-infrastructure
       # requires:
