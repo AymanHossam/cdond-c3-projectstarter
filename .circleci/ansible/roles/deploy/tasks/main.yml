@@ -13,11 +13,6 @@
 #     src: "tmp/artifact.tar.gz"
 #     dest: "~/app"
 
-- name: Install dependencies
-  npm:
-    path: "~/app"
-    command: install
-
 - name: Stop the app
   command: "pm2 stop default"
 
