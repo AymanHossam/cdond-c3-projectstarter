@@ -7,6 +7,9 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
       - run:
           name: Destroy environments
           when: on_fail
@@ -14,14 +17,10 @@ commands:
             aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
             aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
 jobs:
-  notify:
+  notify-success:
     docker:
       - image: "cimg/base:stable"
     steps:
-      - run: echo "deploy my app"
-      - slack/notify:
-          event: fail
-          template: basic_fail_1
       - slack/notify:
           event: pass
           template: success_tagged_deploy_1
@@ -35,12 +34,16 @@ jobs:
       - run:
           name: Build front-end
           command: |
+            return 1
             cd frontend
             npm install
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   build-backend:
     docker:
@@ -58,6 +61,9 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   test-frontend:
     docker:
@@ -72,6 +78,9 @@ jobs:
             cd frontend
             npm install
             npm run test
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   test-backend:
     docker:
@@ -86,6 +95,9 @@ jobs:
             cd backend
             npm install
             npm run test
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   scan-frontend:
     docker:
@@ -100,6 +112,9 @@ jobs:
             cd frontend
             npm install
             npm audit --audit-level=critical
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   scan-backend:
     docker:
@@ -114,6 +129,9 @@ jobs:
             cd backend
             npm install
             npm audit --audit-level=critical
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   deploy-infrastructure:
     docker:
@@ -174,28 +192,34 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
+      - build-frontend:
+          context: "My Slack Context"
+      - build-backend:
+          context: "My Slack Context"
       - test-frontend:
           requires:
             - build-frontend
+          context: "My Slack Context"
       - test-backend:
           requires:
             - build-backend
+          context: "My Slack Context"
       - scan-frontend:
           requires:
             - build-frontend
+          context: "My Slack Context"
       - scan-backend:
           requires:
             - build-backend
-      - notify:
-          requires:
-            - test-frontend
-            - test-backend
-            - scan-frontend
-            - scan-backend
           context: "My Slack Context"
-          when: always
+      - notify-success:
+          requires:
+            - scan-backend
+            - scan-frontend
+            - test-backend
+            - test-frontend
+          context: "My Slack Context"
+
       # - deploy-infrastructure
       # requires:
       # - build-frontend
