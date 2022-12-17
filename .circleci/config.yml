@@ -331,5 +331,5 @@ workflows:
 
       - notify-success:
           requires:
-            - deploy-frontend
+            - deploy-backend
           context: "My Slack Context"
