@@ -195,34 +195,32 @@ workflows:
           context: "My Slack Context"
       - build-backend:
           context: "My Slack Context"
-      - test-frontend:
+      # - test-frontend:
+      #     requires:
+      #       - build-frontend
+      #     context: "My Slack Context"
+      # - test-backend:
+      #     requires:
+      #       - build-backend
+      #     context: "My Slack Context"
+      # - scan-frontend:
+      #     requires:
+      #       - build-frontend
+      #     context: "My Slack Context"
+      # - scan-backend:
+      #     requires:
+      #       - build-backend
+      #     context: "My Slack Context"
+      - deploy-infrastructure:
+          context: "My Slack Context"
           requires:
             - build-frontend
-          context: "My Slack Context"
-      - test-backend:
-          requires:
             - build-backend
-          context: "My Slack Context"
-      - scan-frontend:
+      - configure-infrastructure:
           requires:
-            - build-frontend
-          context: "My Slack Context"
-      - scan-backend:
-          requires:
-            - build-backend
+            - deploy-infrastructure
           context: "My Slack Context"
       - notify-success:
           requires:
-            - scan-backend
-            - scan-frontend
-            - test-backend
-            - test-frontend
+            - configure-infrastructure
           context: "My Slack Context"
-
-      # - deploy-infrastructure
-      # requires:
-      # - build-frontend
-      # - build-backend
-      # - configure-infrastructure:
-      #     requires:
-      #       - deploy-infrastructure
