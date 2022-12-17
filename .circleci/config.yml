@@ -194,7 +194,8 @@ workflows:
       - scan-backend:
           requires:
             - build-backend
-      - notify
+      - notify:
+          context: "My Slack Context"
 
       # - deploy-infrastructure
       # requires:
