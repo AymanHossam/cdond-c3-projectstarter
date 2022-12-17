@@ -9,8 +9,7 @@
     dest: "~/app/artifact.tar.gz"
 
 - name: Log the contents of the folder
-  debug:
-    msg: "{{ lookup('command', 'ls ~/app/') }}"
+  command: "ls -la ~/app"
 
 - name: Extract the zipped artifact
   unarchive:
