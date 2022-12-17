@@ -16,6 +16,8 @@ jobs:
       - image: circleci/node:16.13.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Build front-end
           command: |
@@ -31,6 +33,8 @@ jobs:
       - image: circleci/node:16.13.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Back-end build
           command: |
@@ -46,6 +50,8 @@ jobs:
       - image: circleci/node:16.13.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: test front-end
           command: |
@@ -58,6 +64,8 @@ jobs:
       - image: circleci/node:16.13.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Back-end test
           command: |
@@ -70,6 +78,8 @@ jobs:
       - image: circleci/node:16.13.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: scan front-end
           command: |
@@ -82,6 +92,8 @@ jobs:
       - image: circleci/node:16.13.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-build]
       - run:
           name: Back-end scan
           command: |
