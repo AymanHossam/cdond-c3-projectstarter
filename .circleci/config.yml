@@ -175,7 +175,7 @@ jobs:
       - run: apk add tar gzip
       - add_ssh_keys:
           fingerprints:
-            - "9d:ff:58:3e:86:0c:3f:c2:1b:b4:6f:3e:15:a3:ef:bf:b6:02:bb:94"
+            - "d2:32:15:7e:99:ec:a7:df:5c:5b:6d:92:11:b4:07:b4"
       - attach_workspace:
           at: ~/
       - run:
@@ -191,10 +191,10 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend:
-          context: "My Slack Context"
-      - build-backend:
-          context: "My Slack Context"
+      # - build-frontend:
+      #     context: "My Slack Context"
+      # - build-backend:
+      #     context: "My Slack Context"
       # - test-frontend:
       #     requires:
       #       - build-frontend
@@ -213,9 +213,9 @@ workflows:
       #     context: "My Slack Context"
       - deploy-infrastructure:
           context: "My Slack Context"
-          requires:
-            - build-frontend
-            - build-backend
+          # requires:
+          #   - build-frontend
+          #   - build-backend
       - configure-infrastructure:
           requires:
             - deploy-infrastructure
