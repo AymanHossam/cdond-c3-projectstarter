@@ -262,7 +262,7 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
-      - run: apk add tar gzip nodejs
+      - run: apk add tar gzip nodejs npm
       - add_ssh_keys:
           fingerprints:
             - "d2:32:15:7e:99:ec:a7:df:5c:5b:6d:92:11:b4:07:b4"
