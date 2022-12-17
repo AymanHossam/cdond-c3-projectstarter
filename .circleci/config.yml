@@ -199,7 +199,6 @@ workflows:
             - build-frontend
             - build-backend
           context: "My Slack Context"
-          when: on_fail
 
       # - deploy-infrastructure
       # requires:
