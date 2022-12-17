@@ -195,6 +195,7 @@ workflows:
             - scan-frontend
             - scan-backend
           context: "My Slack Context"
+          when: always
       # - deploy-infrastructure
       # requires:
       # - build-frontend
