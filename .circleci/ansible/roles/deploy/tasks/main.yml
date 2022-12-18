@@ -8,16 +8,14 @@
     src: "artifact.tar.gz"
     dest: "~/app/artifact.tar.gz"
 
-- name: Log the contents of the folder
-  command: "ls -la ~/app"
-
 - name: Extract the zipped artifact
   unarchive:
     src: "~/app/artifact.tar.gz"
     dest: "~/app"
+    remote_src: yes
 
-# - name: Stop the app
-#   command: "pm2 stop default"
+- name: Stop the app
+  command: "pm2 stop default"
 
 - name: Start the app
-  command: "pm2 start ~/app/dist/main.js"
+  command: "pm2 start npm -- start"

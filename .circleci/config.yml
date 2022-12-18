@@ -14,8 +14,8 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            aws cloudformation delete-stack --stack-name udapeople-backend-78be5b8
-            aws cloudformation delete-stack --stack-name udapeople-frontend-78be5b8
+            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     steps:
@@ -24,7 +24,7 @@ commands:
           when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS=`curl -k https://kvdb.io/4qsF4PyMZPvtrX8Uzdi18e/migration-78be5b8`
+            SUCCESS=`curl -k https://kvdb.io/4qsF4PyMZPvtrX8Uzdi18e/migration-${CIRCLE_WORKFLOW_ID:0:7}`
             if(( $SUCCESS==1 )); 
             then
              cd ~/project/backend
@@ -160,21 +160,21 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --tags project=udapeople \
-              --stack-name "udapeople-backend-78be5b8" \
-              --parameter-overrides ID="78be5b8"
+              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Ensure front-end infrastructure exist
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
               --tags project=udapeople \
-              --stack-name "udapeople-frontend-78be5b8" \
-              --parameter-overrides ID="78be5b8"
+              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Add back-end ip to ansible inventory
           command: |
             aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-78be5b8" \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query "Reservations[*].Instances[*].PublicIpAddress" \
               --output text >> .circleci/ansible/inventory.txt
       - persist_to_workspace:
@@ -220,7 +220,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-                curl -k https://kvdb.io/4qsF4PyMZPvtrX8Uzdi18e/migration-78be5b8 -d '1'
+                curl -k https://kvdb.io/4qsF4PyMZPvtrX8Uzdi18e/migration-${CIRCLE_WORKFLOW_ID:0:7} -d '1'
             fi
       # Here's where you will add some code to rollback on failure
 
@@ -241,7 +241,7 @@ jobs:
           name: Get backend url
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-78be5b8" \
+              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query "Reservations[*].Instances[*].PublicIpAddress" \
               --output text)
             export API_URL="http://${BACKEND_IP}:3030"
@@ -254,8 +254,8 @@ jobs:
             cd frontend
             npm install
             npm run build
-            tar -czvf artifact-"78be5b8".tar.gz dist
-            aws s3 cp dist s3://udapeople-78be5b8 --recursive
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
 
   deploy-backend:
     docker:
@@ -290,45 +290,49 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend:
-      #     context: "My Slack Context"
-      # - build-backend:
-      #     context: "My Slack Context"
-      # - test-frontend:
-      #     requires:
-      #       - build-frontend
-      #     context: "My Slack Context"
-      # - test-backend:
-      #     requires:
-      #       - build-backend
-      #     context: "My Slack Context"
-      # - scan-frontend:
-      #     requires:
-      #       - build-frontend
-      #     context: "My Slack Context"
-      # - scan-backend:
-      #     requires:
-      #       - build-backend
-      #     context: "My Slack Context"
-      # - deploy-infrastructure:
-      #     context: "My Slack Context"
-      #     requires:
-      #       - build-frontend
-      #       - build-backend
-      # - configure-infrastructure:
-      #     requires:
-      #       - deploy-infrastructure
-      #     context: "My Slack Context"
-      # - run-migrations:
-      #     requires:
-      #       - configure-infrastructure
-      #     context: "My Slack Context"
-      # - deploy-frontend:
-      # requires:
-      #   - run-migrations
-      # context: "My Slack Context"
-      - deploy-backend
-
+      - build-frontend:
+          context: "My Slack Context"
+      - build-backend:
+          context: "My Slack Context"
+      - test-frontend:
+          requires:
+            - build-frontend
+          context: "My Slack Context"
+      - test-backend:
+          requires:
+            - build-backend
+          context: "My Slack Context"
+      - scan-frontend:
+          requires:
+            - build-frontend
+          context: "My Slack Context"
+      - scan-backend:
+          requires:
+            - build-backend
+          context: "My Slack Context"
+      - deploy-infrastructure:
+          context: "My Slack Context"
+          requires:
+            - test-frontend
+            - test-backend
+            - scan-frontend
+            - scan-backend
+      - configure-infrastructure:
+          requires:
+            - deploy-infrastructure
+          context: "My Slack Context"
+      - run-migrations:
+          requires:
+            - configure-infrastructure
+          context: "My Slack Context"
+      - deploy-frontend:
+          requires:
+            - run-migrations
+          context: "My Slack Context"
+      - deploy-backend:
+          requires:
+            - run-migrations
+          context: "My Slack Context"
       - notify-success:
           requires:
             - deploy-backend
