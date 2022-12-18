@@ -14,7 +14,7 @@
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
 
 - name: Install custom Node.js version
-  script: |
+  shell: |
     nvm install 13.8
 
 - name: "install NPM"
