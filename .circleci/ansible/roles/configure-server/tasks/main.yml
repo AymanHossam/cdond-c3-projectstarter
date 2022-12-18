@@ -15,7 +15,6 @@
 
 - name: Install custom Node.js version
   script: |
-    source ~/.bashrc
     nvm install 13.8
 
 - name: "install NPM"
