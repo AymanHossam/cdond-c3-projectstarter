@@ -316,7 +316,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update nodejs npm curl
+            apk add --update nodejs npm curl jq
             pip install awscli
       - run:
           name: Backend smoke test.
