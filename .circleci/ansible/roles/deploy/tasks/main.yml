@@ -15,4 +15,6 @@
     remote_src: yes
 
 - name: Start the app
-  command: "cd app && pm2 start npm -- start"
+  command: "pm2 start npm -- start"
+  args:
+    chdir: ./app
