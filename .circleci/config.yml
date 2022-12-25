@@ -310,16 +310,16 @@ workflows:
       #     requires:
       #       - build-backend
       #     context: "My Slack Context"
-      # - deploy-infrastructure:
-      #     context: "My Slack Context"
+      - deploy-infrastructure:
+          context: "My Slack Context"
       #     requires:
       #       - test-frontend
       #       - test-backend
       #       - scan-frontend
       #       - scan-backend
       - configure-infrastructure:
-          # requires:
-          #   - deploy-infrastructure
+          requires:
+            - deploy-infrastructure
           context: "My Slack Context"
       - run-migrations:
           requires:
