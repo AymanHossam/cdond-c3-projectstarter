@@ -15,7 +15,7 @@
     remote_src: yes
 
 - name: Stop the app
-  command: "pm2 stop default"
+  command: "pm2 stop all"
 
 - name: Start the app
   command: "pm2 start npm -- start"
