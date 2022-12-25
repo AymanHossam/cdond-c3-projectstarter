@@ -9,19 +9,14 @@
   apt:
     upgrade: yes
 
-- name: Install Node.js
-  ansible.builtin.package:
-    name: nodejs
-    state: present
-    version: "{{ node_version }}"
-    update_cache: yes
-
-- name: "install NPM"
-  apt:
-    name: npm
-    state: present
+- name: "add nodejs 13"
+  become: true
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_13.x | bash -
+    apt-get install -y nodejs
 
 - name: "install pm2"
+  become: true
   npm:
     name: pm2
     global: yes

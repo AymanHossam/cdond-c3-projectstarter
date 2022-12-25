@@ -17,8 +17,8 @@
       wait_for:
         host: "{{ inventory_hostname }}"
         port: 22
-        delay: 30
-        timeout: 1200
+        delay: 10
+        timeout: 600
         state: started
 
     - name: "install python"
