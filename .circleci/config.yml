@@ -419,7 +419,8 @@ workflows:
           context: "My Slack Context"
           filters:
             branches:
-              only: [master]
+              only:
+                - master
           requires:
             - test-frontend
             - test-backend
