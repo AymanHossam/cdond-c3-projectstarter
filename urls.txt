@@ -1,0 +1,10 @@
+[URL01]
+	https://github.com/AymanHossam/cdond-c3-projectstarterrrr/commits/master
+[URL02]
+	http://udapeople-831a61c.s3-website-us-east-1.amazonaws.com
+[URL03]
+	http://d2bk4h0zlmhypt.cloudfront.net/#/employees
+[URL04]
+	http://ec2-18-205-151-101.compute-1.amazonaws.com:3030/api/status
+[URL05]
+	http://ec2-44-202-3-74.compute-1.amazonaws.com:9090/targets
